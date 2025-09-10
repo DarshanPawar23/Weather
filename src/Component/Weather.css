@@ -1,14 +1,15 @@
 .weather {
   place-self: center;
-  padding: 30px;
+  padding: 20px;
   border-radius: 15px;
   background-image: linear-gradient(45deg, rgb(67, 3, 83), rgb(14, 14, 14));
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 400px;
-  width: 90%;
-  margin: auto;
+  width: 95%; /* ✅ fills phone screen nicely */
+  margin: 10px auto;
+  box-sizing: border-box;
 }
 
 .search-bar {
@@ -27,6 +28,7 @@
   padding-left: 20px;
   color: #626262;
   font-size: 16px;
+  min-width: 0; /* ✅ prevents overflow */
 }
 
 .search-bar img {
@@ -47,12 +49,14 @@
   color: #ebfffc;
   font-size: 60px;
   line-height: 1;
+  text-align: center;
 }
 
 .location {
   color: white;
   font-size: 28px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .weather-data {
@@ -88,7 +92,14 @@
   font-size: 16px;
 }
 
+/* ✅ Mobile adjustments */
 @media (max-width: 500px) {
+  .weather {
+    padding: 15px;
+    width: 100%; /* ✅ takes full phone width */
+    border-radius: 0; /* ✅ removes extra border effect */
+  }
+
   .temprature {
     font-size: 45px;
   }
