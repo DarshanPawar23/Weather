@@ -8,6 +8,6 @@
 .app{
   height: 100%;
   width: 100%;
-  /* display: grid; */
+  display: grid;
   background:#e2d4ff;
 }
