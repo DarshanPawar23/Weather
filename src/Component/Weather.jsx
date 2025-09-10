@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Weather.css'
 import search_icon from '../assets/search.png'
 import clear_icon from '../assets/clear.png'
@@ -9,21 +9,71 @@ import rain_icon from '../assets/rain.png'
 import snow_icon from '../assets/snow.png'
 import wind_icon from '../assets/wind.png'
 function Weather() {
+  const[weather , Setweather] =useState(false)
+  const ref = useRef();
+  const allicon ={
+    "01d" :clear_icon,
+    "01n" :clear_icon,
+    "02d" :cloud_icon,
+    "02n" :cloud_icon,
+    "03d" :clear_icon,
+    "03n" :clear_icon,
+    "04d" :drizzle_icon,
+    "04n" :drizzle_icon,
+    "09d" :rain_icon,
+    "09n" :rain_icon,
+    "10d" :rain_icon,
+    "10n" :rain_icon,
+    "13d" :snow_icon,
+    "13n" :snow_icon,
+  }
+  const search = async(city)=>{
+    if(city===""){
+      alert("Enter city name");
+      return;
+    }
+    try{
+       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${import.meta.env.VITE_APP_ID}`;
+
+       const response = await fetch(url);
+       const data = await response.json();
+       if(!response.ok){
+        alert("city not found")
+       }
+       console.log(data)
+       const icon = allicon[data.weather[0].icon] || clear_icon;
+
+       Setweather({
+        humidity : data.main.humidity,
+        temprature : Math.floor(data.main.temp),
+        windSpeed : data.wind.speed,
+         location : data.name,
+         icon : icon
+       })
+    }
+    catch{
+      Setweather(false)
+    }
+  }
+  useEffect(()=>{
+   search("London")
+  },[])
   return (
     <div className='weather'>
         <div className="search-bar">
-            <input type='text' placeholder='search'/>
-            <img src={search_icon} alt='search_icon'/>
+            <input type='text' placeholder='search' ref={ref}/>
+            <img src={search_icon} alt='search_icon' onClick={()=>search(ref.current.value)}/>
         </div>
-        <img src={clear_icon}  alt='clear_icon' className='weather-icon'/>
-        <p className='temprature'>16°c</p>
-        <p className='location'>London</p>
+        { weather?<>
+        <img src={weather.icon}  alt='clear_icon' className='weather-icon'/>
+        <p className='temprature'>{weather.temprature}°c</p>
+        <p className='location'>{weather.location}</p>
 
         <div className="weather-data">
           <div className="col">
             <img src={wind_icon} alt='wind-icon'/>
             <div>
-              <p>3.6km/h</p>
+              <p>{weather.windSpeed}km/h</p>
               <span>Wind Speed</span>
             </div>
           </div>
@@ -31,11 +81,11 @@ function Weather() {
            <div className="col">
             <img src={humidity_icon} alt='humidity-icon'/>
             <div>
-              <p>91%</p>
+              <p>{weather.humidity}%</p>
               <span>Humidity</span>
             </div>
           </div>
-        </div>
+        </div> </> : <></>}
     </div>
   )
 }
